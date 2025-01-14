@@ -1,0 +1,14 @@
+version: '3.8' # Specify the version of docker-compose
+
+services:
+  skex-frontend-tester-1:
+    image: divy214/skex-frontend-tester-1
+    ports:
+      - "3000:3000"
+    depends_on:
+      - skex-backend-tester-1
+
+  skex-backend-tester-1:
+    image: divy214/skex-backend-tester-1
+    ports:
+      - "5000:5000"

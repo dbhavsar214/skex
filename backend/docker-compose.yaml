@@ -1,0 +1,12 @@
+services:
+  slex-frontend-test:
+    image: divy214/skex-frontend-test
+    ports:
+      - "3000:3000"
+    depends_on:
+      - skex-backend-test
+
+  skex-backend-test:
+    image: divy214/skex-backend-test
+    ports:
+      - "5000:5000"

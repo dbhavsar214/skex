@@ -1,0 +1,147 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Create a VPC with 3 public and 3 private subnets, two security groups, an EC2 instance, and an RDS instance.
+
+Parameters:
+  VpcCIDR:
+    Type: String
+    Default: '10.0.0.0/16'
+    Description: The CIDR block for the VPC
+
+Resources:
+  MyVPC:
+    Type: 'AWS::EC2::VPC'
+    Properties:
+      CidrBlock: !Ref VpcCIDR
+      Tags:
+        - Key: Name
+          Value: skex-vpc-2
+
+  MyInternetGateway:
+    Type: 'AWS::EC2::InternetGateway'
+    Properties:
+      Tags:
+        - Key: Name
+          Value: skex-vpc-2-igw
+
+  MyVPCGatewayAttachment:
+    Type: 'AWS::EC2::VPCGatewayAttachment'
+    Properties:
+      VpcId: !Ref MyVPC
+      InternetGatewayId: !Ref MyInternetGateway
+
+  PublicSubnet1:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      VpcId: !Ref MyVPC
+      CidrBlock: '10.0.1.0/24'
+      AvailabilityZone: 'us-east-1a'
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: skex-vpc-2-public-subnet-1
+
+  PublicSubnet2:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      VpcId: !Ref MyVPC
+      CidrBlock: '10.0.2.0/24'
+      AvailabilityZone: 'us-east-1b'
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: skex-vpc-2-public-subnet-2
+
+  PublicSubnet3:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      VpcId: !Ref MyVPC
+      CidrBlock: '10.0.3.0/24'
+      AvailabilityZone: 'us-east-1c'
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: skex-vpc-2-public-subnet-3
+
+  PrivateSubnet1:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      VpcId: !Ref MyVPC
+      CidrBlock: '10.0.11.0/24'
+      AvailabilityZone: 'us-east-1a'
+      Tags:
+        - Key: Name
+          Value: skex-vpc-2-private-subnet-1
+
+  PrivateSubnet2:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      VpcId: !Ref MyVPC
+      CidrBlock: '10.0.12.0/24'
+      AvailabilityZone: 'us-east-1b'
+      Tags:
+        - Key: Name
+          Value: skex-vpc-2-private-subnet-2
+
+  PrivateSubnet3:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      VpcId: !Ref MyVPC
+      CidrBlock: '10.0.13.0/24'
+      AvailabilityZone: 'us-east-1c'
+      Tags:
+        - Key: Name
+          Value: skex-vpc-2-private-subnet-3
+
+  SkexEC2SecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupName: skex-ec2-group-2
+      GroupDescription: Security group for EC2 instances
+      VpcId: !Ref MyVPC
+      SecurityGroupIngress:
+        - IpProtocol: -1
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 3000
+          ToPort: 3000
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 5000
+          ToPort: 5000
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: skex-ec2-group-2
+
+  SkexDBSecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupName: skex-db-group-2
+      GroupDescription: Security group for database instances
+      VpcId: !Ref MyVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 3306
+          ToPort: 3306
+          SourceSecurityGroupId: !Ref SkexEC2SecurityGroup
+      Tags:
+        - Key: Name
+          Value: skex-db-group-2
+
+  SkexEC2Instance:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      InstanceType: t2.micro
+      KeyName: skex-test-1
+      ImageId: ami-0ba9883b710b05ac6  # Amazon Linux 2 AMI for us-east-1 region, update this with the latest AMI ID for your region
+      NetworkInterfaces:
+        - AssociatePublicIpAddress: true
+          DeviceIndex: '0'
+          SubnetId: !Ref PublicSubnet1
+          GroupSet:
+            - !Ref SkexEC2SecurityGroup
+      Tags:
+        - Key: Name
+          Value: skex-2
+
+  
