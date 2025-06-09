@@ -1,7 +1,7 @@
 # SKEX Stock Trading Application
-**Course**: CSCI 5409 Cloud Computing  
-**Author**: Divy Bhavsar (B00978267)  
-**Term**: Summer 2024  
+
+**Author**: Divy Bhavsar
+
 
 ---
 
@@ -39,7 +39,7 @@
 ---
 
 ## AWS Architecture
-![AWS Architecture Diagram](https://via.placeholder.com/600x400?text=VPC+%7C+EC2+%7C+RDS+%7C+Lambda+%7C+SNS+%7C+Backup)  
+
 *Simplified diagram showing AWS services integration*
 
 ### Services Used
