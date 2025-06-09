@@ -105,8 +105,3 @@
 - AWS CLI configured
 - Docker installed
 - CloudFormation templates & Docker images
-
-### Deployment Steps
-1. **Deploy Infrastructure**:
-```bash
-aws cloudformation deploy --template-file template.yml --stack-name skex-stack
